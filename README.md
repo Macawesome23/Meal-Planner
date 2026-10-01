@@ -1,5 +1,8 @@
 # 🍳 Culina - Smart Meal Planner
 
+[![Deploy with Vercel](https://vercel.com/button)](https://vercel.com/new)
+**Live Demo:** [https://meal-planner-jwcaybpsz-macawesome23s-projects.vercel.app](https://meal-planner-jwcaybpsz-macawesome23s-projects.vercel.app)
+
 Culina is a beautifully designed, full-stack Next.js web application that helps users discover new recipes, organize their weekly meal plans, and sync their digital kitchen across all their devices.
 
 ![Culina Preview](https://images.unsplash.com/photo-1504674900247-0877df9cc836?auto=format&fit=crop&q=80&w=1200&h=400)
