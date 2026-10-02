@@ -36,12 +36,12 @@ export default function Header() {
   // Sync state to Redis when planner state changes and user is logged in
   useEffect(() => {
     if (user?.id) {
-      // Instead of server sessions, we can just pass the user ID directly in this demo
-      fetch('/api/sync', {
+      const apiUrl = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:4000';
+      fetch(`${apiUrl}/api/sync`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ userId: user.id, ...plannerState })
-      });
+      }).catch(err => console.error('Failed to sync to microservice:', err));
     }
   }, [plannerState, user]);
 
