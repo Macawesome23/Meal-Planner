@@ -3,6 +3,10 @@ import cors from 'cors';
 import dotenv from 'dotenv';
 import { Redis } from '@upstash/redis';
 
+// 1. Import Node.js Core Modules (Notice we don't need to 'npm install' these!)
+import fs from 'fs';
+import path from 'path';
+
 dotenv.config();
 
 const app = express();
@@ -38,7 +42,22 @@ app.post('/api/sync', requireAuth, async (req, res) => {
     // Save to Upstash Redis
     await redis.set(`planner:${userId}`, JSON.stringify(plannerData));
     
-    console.log(`[SYNC] Saved planner data for user: ${userId}`);
+    // 2. The Node.js File System & The Event Loop!
+    const backupDir = path.join(__dirname, '..', 'backups');
+    const backupFilePath = path.join(backupDir, `${userId}.json`);
+
+    // We changed this to be ASYNCHRONOUS!
+    // Instead of freezing the server, Node sends this to the background
+    try {
+      await fs.promises.access(backupDir);
+    } catch {
+      await fs.promises.mkdir(backupDir);
+    }
+
+    // Write the file asynchronously. The main thread is free to help other users while this saves!
+    await fs.promises.writeFile(backupFilePath, JSON.stringify(plannerData, null, 2));
+    
+    console.log(`[SYNC] Saved planner data to Redis AND created local backup for user: ${userId}`);
     res.json({ success: true, message: 'Data synced to Redis successfully' });
   } catch (error) {
     console.error('[SYNC ERROR]', error);
